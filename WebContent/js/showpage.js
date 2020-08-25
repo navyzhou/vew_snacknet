@@ -1,4 +1,4 @@
-$.fn.showPage = function(count) {
+c$.fn.showPage = function(count) {
 	var str = '<a href="javascript:void(0)" class="current">1</a>';
 	for (var i = 2; i <= count; i ++) {
 		str += '<a href="javascript:void(0)">' + i + '</a>';

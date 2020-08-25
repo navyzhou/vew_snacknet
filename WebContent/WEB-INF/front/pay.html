@@ -40,7 +40,6 @@
                 <span>|</span>
            		<a href="#" target="_blank">个人信息</a>
             </div>
-        
         </div>
     </div>
     
@@ -52,29 +51,21 @@
             </a>
         </div>
         
-        <div class="search_right">
+        <div class="search_right"  id="search_item">
         	<div class="search_top">
                 <div class="search_div">
                     <input type="search" class="search-ipt" placeholder="请输入要搜索的内容" />
                     <input type="button" class="search-btn"/>  
                 </div>
                 <div class="buycart">
-                	<i class="iconfont" id="iconfont">0</i>
+                	<i class="iconfont">{{cartCount}}</i>
                     <a href="front/cart.html" target="_blank">我的购物车</a>
                 </div>
             </div>
             
-            <div class="search_item" id="search_item">
-            	<a href="#" class="selected">全部</a>
-            	<a href="#">干果</a>
-                <a href="#">麻辣</a>
-                <a href="#">水果</a>
-                <a href="#">饼干</a>
-                <a href="#">奶制品</a>
-                <a href="#">饮料</a>
-                <a href="#">干果</a>
-                <a href="#">麻辣</a>
-                <a href="#">水果</a>
+            <div class="search_item">
+            	<a href="javascript:void(0)" data-tno="" class="selected" @click="findByTno(0, '')">全部</a>
+            	<a v-for="(type, index) in types" :data-tno="type.tno"  href="javascript:void(0)" @click="findByTno(index + 1, type.tno)">{{type.tname}}</a>
             </div>
         </div>
     </div>
@@ -137,11 +128,11 @@
 <h3 class="common_title">支付方式</h3>	
 <div class="common_list_con clearfix">
     <div class="pay_style_con clearfix">
-        <input type="radio" name="pay_style" checked>
+        <input type="radio" name="pay_style">
         <label class="cash">货到付款</label>
         <input type="radio" name="pay_style">
         <label class="weixin">微信支付</label>
-        <input type="radio" name="pay_style">
+        <input type="radio" name="pay_style" checked>
         <label class="zhifubao"></label>
         <input type="radio" name="pay_style">
         <label class="bank">银行卡支付</label>
@@ -214,10 +205,13 @@
 <script type="text/javascript" src="js/axios.js"></script>
 <script type="text/javascript" src="js/qs.js"></script>
 <script type="text/javascript" src="js/checklogin.js"></script>
-
-<script src="js/addr.js"></script>
+<script type="text/javascript" src="js/getcartinfo.js"></script>
+<script type="text/javascript" src="js/addr.js"></script>
 
 <script type="text/javascript">
+// 获取收货地址信息
+
+// 根据用户选中的购物车编号，查询要下单购买的商品信息
 
 function showAddrDiv() {
 	$("#addr_div").css("display", "block");

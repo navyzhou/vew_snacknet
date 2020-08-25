@@ -21,3 +21,12 @@ let login = new Vue({
 		})
 	}
 })
+
+function showMsg(msg, callback) {
+	$("#popup_info").text(msg);
+	$('.popup_con').fadeIn('fast', function() {
+		setTimeout(function(){
+			$('.popup_con').fadeOut('fast', callback);	
+		}, 2000)
+	});
+}

@@ -20,7 +20,7 @@ public class BasicController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doPost(req, resp);
 	}
-	
+
 	/**
 	 * 返回一个状态码的方法
 	 * @param response
@@ -28,11 +28,12 @@ public class BasicController extends HttpServlet{
 	 * @throws IOException
 	 */
 	protected void send(HttpServletResponse response, int status) throws IOException {
+		response.setContentType("text/plain;charset=utf-8"); // 告诉浏览器是以普通文本返回的
 		PrintWriter out = response.getWriter();
 		out.print(status);
 		out.flush();
 	}
-	
+
 	/**
 	 * 以json格式回送一个对象
 	 * @param response
@@ -40,12 +41,13 @@ public class BasicController extends HttpServlet{
 	 * @throws IOException
 	 */
 	protected void send(HttpServletResponse response, Object obj) throws IOException {
+		response.setContentType("text/plain;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		out.print(gson.toJson(obj));
 		out.flush();
 	}
-	
+
 	/**
 	 * 以json格式回送数据的方法，返回一个状态码code和一个提示信息msg
 	 * @param response
@@ -54,6 +56,7 @@ public class BasicController extends HttpServlet{
 	 * @throws IOException 
 	 */
 	protected void send(HttpServletResponse response, int code, String msg) throws IOException {
+		response.setContentType("text/plain;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -62,7 +65,7 @@ public class BasicController extends HttpServlet{
 		out.print(gson.toJson(map));
 		out.flush();
 	}
-	
+
 	/**
 	 * 以json格式回送数据的方法，返回一个状态码code和一些数据
 	 * @param response
@@ -71,6 +74,7 @@ public class BasicController extends HttpServlet{
 	 * @throws IOException 
 	 */
 	protected void send(HttpServletResponse response, int code, Object data) throws IOException {
+		response.setContentType("text/plain;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -79,7 +83,7 @@ public class BasicController extends HttpServlet{
 		out.print(gson.toJson(map));
 		out.flush();
 	}
-	
+
 	protected void error(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();

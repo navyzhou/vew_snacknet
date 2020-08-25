@@ -28,10 +28,22 @@ public class CartInfoController extends BasicController{
 		case "update": update(request, response); break; // 更新数量的方法
 		case "add" : add(request, response); break; // 添加
 		case "find" : find(request, response); break; // 查询用户的购物车信息
+		case "delete" : delete(request, response); break; // 查询用户的购物车信息
 		case "findByCnos" : findByCnos(request, response); break; // 根据购物车编号查询商品信息
 		default:
 			break;
 		}
+	}
+
+	private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String cnos = request.getParameter("cno");
+		ICartInfoBiz cartInfoBiz = new CartInfoBizImpl();
+		int result = cartInfoBiz.delete(cnos);
+		if (result > 0) {
+			this.send(response, 200, null);
+			return;
+		}
+		this.send(response, 500, null);
 	}
 
 	private void findByCnos(HttpServletRequest request, HttpServletResponse response) throws IOException {

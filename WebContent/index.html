@@ -80,19 +80,19 @@
             </a>
         </div>
         
-        <div class="search_right">
+        <div class="search_right" id="search_item">
         	<div class="search_top">
                 <div class="search_div">
                     <input type="search" class="search-ipt" id="search_gname" placeholder="请输入要搜索的内容" />
                     <input type="button" class="search-btn" onclick="search()"/>  
                 </div>
                 <div class="buycart">
-                	<i class="iconfont">0</i>
+                	<i class="iconfont">{{cartCount}}</i>
                     <a href="front/cart.html" target="_blank">我的购物车</a>
                 </div>
             </div>
             
-            <div class="search_item" id="search_item">
+            <div class="search_item">
             	<a href="javascript:void(0)" data-tno="" class="selected" @click="findByTno(0, '')">全部</a>
             	<a v-for="(type, index) in types" :data-tno="type.tno"  href="javascript:void(0)" @click="findByTno(index + 1, type.tno)">{{type.tname}}</a>
             </div>
@@ -170,18 +170,17 @@
 <script type="text/javascript" src="js/axios.js"></script>
 <script type="text/javascript" src="js/qs.js"></script>
 <script type="text/javascript" src="js/checklogin.js"></script>
-
 <script type="text/javascript" src="js/showpage.js"></script>
-
-
-<script>
+<script type="text/javascript">
 var page = 1;
 var rows = 5;
 	
 let types = new Vue({
 	el: "#search_item",
 	data: {
-		types: []
+		types: [],
+		cartCount: 0,
+		carts: []
 	},
 	mounted: function() { // 页面渲染完成后要执行的方法
 		axios.post("type", qs.stringify({op:"finds"})).then(result => { // vue的axios里面默认发送请求时的参数格式为json格式，这样的后后台没法识别，需要通过qs.stringify()方法转成op=finds
@@ -189,6 +188,13 @@ let types = new Vue({
 				this.types  = result.data;
 			}
 		}) 
+		
+		axios.post("cart", qs.stringify({op:"info"})).then(result => {
+			if (result.status == 200 && result.data.code == 200) { 
+				this.cartCount = result.data.data.length;
+				this.carts = result.data.data;
+			}
+		})
 	},
 	methods:  {
 		findByTno: function(idx, tno) {
@@ -259,16 +265,6 @@ function findByPage(index, obj) {
 			vm.$data.goods = rt.data;
 		}
 	})
-}
-
-function addCart() {
-	$("#popup_info").text("加入购物车成功...");
-	$('.popup_con').fadeIn('fast', function() {
-		setTimeout(function(){
-			$('.popup_con').fadeOut('fast',function(){
-			});	
-		}, 2000)
-	});
 }
 </script>
 </body>
