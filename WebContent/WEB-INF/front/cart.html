@@ -263,6 +263,11 @@ function gotoPay() {
 		cnos.push($(this).data("cno")); // 取当前对象的data里面的cno属性值，取出这个商品的购物车编号
 	})
 	
+	if (cnos.length <= 0) { // 说明没有勾选任何商品
+		showMsg("请选择您要结算的商品...", null);
+		return;
+	}
+	
 	// 采用本地存储，它是属于永久存储类型
 	localStorage.removeItem("cnos"); // 先从本地存储中移除这个属性
 	localStorage.setItem("cnos", cnos.join(",")); // 将数组以逗号拼接成字符串，存到本地的cnos键中

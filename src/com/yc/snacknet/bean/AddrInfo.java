@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 public class AddrInfo implements Serializable{
 	private static final long serialVersionUID = 671495279962403318L;
-	private Integer ano;
+	private String ano;
 	private Integer mno;
 	private String name;
 	private String tel;
@@ -29,11 +29,11 @@ public class AddrInfo implements Serializable{
 				+ "]";
 	}
 
-	public Integer getAno() {
+	public String getAno() {
 		return ano;
 	}
 
-	public void setAno(Integer ano) {
+	public void setAno(String ano) {
 		this.ano = ano;
 	}
 
