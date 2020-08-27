@@ -9,7 +9,7 @@ public interface IOrderInfoBiz {
 	 * @param mno
 	 * @return
 	 */
-	public List<Map<String, String>> finds(String mno);
+	public List<Map<String, Object>> finds(String mno);
 	
 	/**
 	 * 添加订单
@@ -18,5 +18,13 @@ public interface IOrderInfoBiz {
 	 * @param ano
 	 * @return
 	 */
-	public int add(String cnos, double totalPrice, String ano);
+	public String add(String cnos, double totalPrice, String ano);
+	
+	/**
+	 * 修改订单状态
+	 * @param ono
+	 * @param status
+	 * @return
+	 */
+	public int update(String ono, Integer status);
 }

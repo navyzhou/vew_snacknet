@@ -93,9 +93,9 @@
                 <li class="col05">{{item.price}}</li>
                 <li class="col06">
                 	<div class="num_add">
-                    	<a href="javascript:void(0)" @click="lost(index)" class="minus fl">-</a>
+                    	<a href="javascript:void(0)" @click="lost(index, item.cno)" class="minus fl">-</a>
                         <input type="text" v-model="nums[index]" class="num_show fl">
-                        <a href="javascript:void(0)" @click="add(index)" class="add fl">+</a>
+                        <a href="javascript:void(0)" @click="add(index, item.cno)" class="add fl">+</a>
                     </div>
                 </li>
                 <li class="col07" v-html="(item.price * nums[index]).toFixed(2)"></li>
@@ -149,6 +149,13 @@ let app = new Vue({
 	mounted: function() {
 		axios.get("cart", {params:{op:"find"}}).then(result => {
 			if (result.data.code == 200) {
+				if (result.data.data.length <= 0) {
+					showMsg("购物车空空如也，立即去购买...", function() {
+						location.href="index.html";
+					});
+					return;
+				}
+				
 				this.carts = result.data.data;
 				
 				this.carts.forEach( (item, index) => {
@@ -170,18 +177,29 @@ let app = new Vue({
 		window.changes = this.changes;
 	},
 	methods: {
-		lost: function(index) {
+		lost: function(index, cno) {
 			let val = this.nums[index];
 			if (val <= 1){
 				return;
 			}
-			this.$set(this.nums, index, val - 1);
-			this.getTotal();
+			
+			axios.post("cart", qs.stringify({op:"update", num: -1, cno:cno})).then(result => {
+				if (result.data.code == 200) {
+					this.$set(this.nums, index, val - 1);
+					this.getTotal();
+				}
+			})
+			
+			
 		},
-		add: function(index) {
+		add: function(index, cno) {
 			let val = this.nums[index];
-			this.$set(this.nums, index, val + 1);
-			this.getTotal();
+			axios.post("cart", qs.stringify({op:"update", num: 1, cno:cno})).then(result => {
+				if (result.data.code == 200) {
+					this.$set(this.nums, index, val + 1);
+					this.getTotal();
+				}
+			})
 		},
 		getTotal: function() {
 			this.totalCount = 0;

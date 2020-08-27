@@ -19,14 +19,15 @@ public class OrderInfoDaoImpl implements IOrderInfoDao{
 	@Override
 	public List<Map<String, String>> finds(String mno) {
 		DBHelper db = new DBHelper();
-		String sql = "select o.ono, date_format(odate, '%Y-%m-%d %H:%i') odate, oprice totalPrice, o.status, i.gno, nums, i.price, gname, pics, weight, unit"
+		String sql = "select o.ono, date_format(odate, '%Y-%m-%d %H:%i') odate, o.price totalPrice, o.status, i.gno, nums, i.price, gname, "
+				+ "if(instr(pics, ',') <=0, pics, left(pics, instr(pics, ',') - 1)) pics, weight, unit"
 				+ " from orderinfo o, orderiteminfo i, goodsinfo g, addrinfo a where o.ono=i.ono and i.gno=g.gno and a.ano=o.ano and a.mno=?"
-				+ " order by odate desc";
+				+ " order by o.ono desc";
 		return db.gets(sql, mno);
 	}
 
 	@Override
-	public int add(String cnos, double totalPrice, String ano) {
+	public String add(String cnos, double totalPrice, String ano) {
 		DBHelper db = new DBHelper();
 		List<String> sqls = new ArrayList<String>(); // 存放所有要执行的sql语句
 		List<List<Object>> params = new ArrayList<List<Object>>(); // 每条sql语句对应的参数列表
@@ -42,8 +43,10 @@ public class OrderInfoDaoImpl implements IOrderInfoDao{
 		params.add(param1);
 		
 		// 插入多条数据到订单详细表orderiteminfo -> 要添加的数据信息从购物车表中
-		String sql2 = "insert into orderiteminfo select 0, ?, c.gno, c.nums, g.price, 1 from cartinfo c, goodsinfo g where c.gno=g.gno and cno in(";
+		String sql2 = "insert into orderiteminfo select 0, ?, c.gno, c.num, g.price, 1 from cartinfo c, goodsinfo g where c.gno=g.gno and cno in(";
 		List<Object> param2 = new ArrayList<Object>();
+		param2.add(ono);
+		
 		String[] temp = cnos.split(",");
 		for (String cno : temp) {
 			sql2 += "?,";  // cno in(?,?,?);
@@ -78,7 +81,21 @@ public class OrderInfoDaoImpl implements IOrderInfoDao{
 		sqls.add(sql4);
 		params.add(param4);
 		
-		return db.updates(sqls, params);
+		if (db.updates(sqls, params) > 0) {
+			return ono;
+		}
+		return "";
 	}
 
+	/**
+	 * 修改订单状态
+	 * @param ono
+	 * @param status
+	 * @return
+	 */
+	public int update(String ono, Integer status) {
+		DBHelper db = new DBHelper();
+		String sql = "update orderinfo set status = ? where ono = ?";
+		return db.update(sql, status, ono);
+	}
 }

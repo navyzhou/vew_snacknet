@@ -28,6 +28,7 @@ public class BasicController extends HttpServlet{
 	 * @throws IOException
 	 */
 	protected void send(HttpServletResponse response, int status) throws IOException {
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("text/plain;charset=utf-8"); // 告诉浏览器是以普通文本返回的
 		PrintWriter out = response.getWriter();
 		out.print(status);
@@ -41,10 +42,25 @@ public class BasicController extends HttpServlet{
 	 * @throws IOException
 	 */
 	protected void send(HttpServletResponse response, Object obj) throws IOException {
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("text/plain;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		out.print(gson.toJson(obj));
+		out.flush();
+	}
+	
+	/**
+	 * 返回一个普通字符串
+	 * @param response
+	 * @param str
+	 * @throws IOException
+	 */
+	protected void send(HttpServletResponse response, String str) throws IOException {
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.print(str);
 		out.flush();
 	}
 
@@ -56,6 +72,7 @@ public class BasicController extends HttpServlet{
 	 * @throws IOException 
 	 */
 	protected void send(HttpServletResponse response, int code, String msg) throws IOException {
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("text/plain;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new GsonBuilder().serializeNulls().create();
@@ -74,6 +91,7 @@ public class BasicController extends HttpServlet{
 	 * @throws IOException 
 	 */
 	protected void send(HttpServletResponse response, int code, Object data) throws IOException {
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("text/plain;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new GsonBuilder().serializeNulls().create();
@@ -85,6 +103,7 @@ public class BasicController extends HttpServlet{
 	}
 
 	protected void error(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";

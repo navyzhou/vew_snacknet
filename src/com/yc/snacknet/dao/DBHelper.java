@@ -170,6 +170,7 @@ public class DBHelper{
 
 			con.commit(); // 提交事务
 		} catch (SQLException e) {
+			result = 0;
 			try {
 				con.rollback();  // 回滚事务
 			} catch (SQLException e1) {

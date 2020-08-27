@@ -102,7 +102,7 @@
 	            </div>
 	            <div class="balance_cls">仓库量<span id="store_num">{{goods.balance}}</span> {{goods.unit}}</div>
 	        </div>
-	        <div class="total">总价：<em>{{goods.price * nums}}</em>元</div>
+	        <div class="total">总价：<em v-html="(goods.price * nums).toFixed(2)"></em>元</div>
 	        <div class="operate_btn">
 	            <a href="javascript:;" class="buy_btn" id="buy_btn">立即购买</a>
 	            <a href="javascript:void(0);" class="add_cart" id="add_cart" @click="addCart()">加入购物车</a>				

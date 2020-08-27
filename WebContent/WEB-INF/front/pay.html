@@ -137,7 +137,7 @@
 	</div>
 </div>
 <div class="order_submit clearfix">
-    <a href="javascript:void(0);" id="order_btn" onclick="payOrder()">提交订单</a>
+    <a href="javascript:void(0)" id="order_btn" onclick="payOrder()">提交订单</a>
 </div>	
 
 <div id="addr_div">
@@ -172,12 +172,12 @@
         </ul>
     </form>
 </div>
+
 <div class="popup_con">
-    <div class="popup">
-        <p>订单提交成功，3秒后自动跳转到首页...</p>
-    </div>
-    <div class="mask"></div>
-</div>    
+	<div class="popup">
+		<p id="popup_info"></p>
+	</div>
+</div>  
         
 <footer>
 	<div class="foot_link">
@@ -223,6 +223,10 @@ let app = new Vue({
 				})
 				this.totalPrice = parseFloat(this.totalPrice.toFixed(2));
 			}
+			
+			this.$nextTick(function() {
+				bindInfo();
+			})
 		}))
 	}
 })
@@ -232,19 +236,15 @@ function getAddrInfo() {
 	return axios.get("addr", {params:{op:"findByMno"}});
 }
 
-var cnos = "";
-
 // 根据用户选中的购物车编号，查询要下单购买的商品信息
 function getGoodsInfo() {
 	// 从本地存储里面获取要查询的购物车的编号
-	cnos = localStorage.getItem("cnos");
+	let cnos = localStorage.getItem("cnos");
 	
 	if (!cnos) { // 说明没有勾选商品信息，则调到购物车里面
 		showMsg("请先选择您要购买的商品...", function() {location.href="front/cart.html";})
 		return;
 	}
-	
-	localStorage.removeItem("cnos"); // 清除本地缓存中的购物车编号信息
 	return axios.post("cart", qs.stringify({op:"findByCnos", cnos:cnos}));
 }
 
@@ -256,9 +256,37 @@ function hiddenDiv() {
 	$("#addr_div").css("display", "none");
 }
 
+function bindInfo() {
+	$("#addr_list > dd").click(function() {
+		$("#addr_list > dd").removeClass("current_location");
+		$(this).addClass("current_location");
+	})
+}
+
 // 提交订单
 function payOrder() {
+	let cnos = localStorage.getItem("cnos");
 	
+	if (!cnos) { // 说明没有勾选商品信息，则调到购物车里面
+		showMsg("请先选择您要购买的商品...", function() {location.href="front/cart.html";})
+		return;
+	}
+	
+	
+	var totalPrice = $.trim($("#total_pay").text().replace("元","")); // 获取订单总价
+	var ano = $("#addr_list > dd[class='current_location']").data("ano");
+	
+	$.post("order", {op: "add", cnos:cnos, totalPrice:totalPrice, ano:ano}, result => {
+		if (result.code == 200) {
+			localStorage.removeItem("cnos"); // 清除本地缓存中的购物车编号信息
+			// 只是最好是调用支付宝的沙箱模拟支付
+			showMsg("下单成功请支付...", function() {
+				location.href = 'alipay?ono=' + result.msg +"&price=" + totalPrice;
+			})
+		} else {
+			showMsg("下单失败，请稍后重试...", null)
+		}
+	}, "json");
 }
 </script>
 </body>

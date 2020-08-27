@@ -16,7 +16,15 @@ public interface IOrderInfoDao {
 	 * @param cnos
 	 * @param totalPrice
 	 * @param ano
+	 * @return 返回订单编号
+	 */
+	public String add(String cnos, double totalPrice, String ano);
+	
+	/**
+	 * 修改订单状态
+	 * @param ono
+	 * @param status
 	 * @return
 	 */
-	public int add(String cnos, double totalPrice, String ano);
+	public int update(String ono, Integer status);
 }

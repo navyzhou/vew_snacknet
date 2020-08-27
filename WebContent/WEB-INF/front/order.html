@@ -53,29 +53,21 @@
             </a>
         </div>
         
-        <div class="search_right">
+        <div class="search_right"  id="search_item">
         	<div class="search_top">
                 <div class="search_div">
                     <input type="search" class="search-ipt" placeholder="请输入要搜索的内容" />
                     <input type="button" class="search-btn"/>  
                 </div>
                 <div class="buycart">
-                	<i class="iconfont" id="iconfont">0</i>
+                	<i class="iconfont">{{cartCount}}</i>
                     <a href="front/cart.html" target="_blank">我的购物车</a>
                 </div>
             </div>
             
-            <div class="search_item" id="search_item">
-            	<a href="#" class="selected">全部</a>
-            	<a href="#">干果</a>
-                <a href="#">麻辣</a>
-                <a href="#">水果</a>
-                <a href="#">饼干</a>
-                <a href="#">奶制品</a>
-                <a href="#">饮料</a>
-                <a href="#">干果</a>
-                <a href="#">麻辣</a>
-                <a href="#">水果</a>
+            <div class="search_item">
+            	<a href="javascript:void(0)" data-tno="" class="selected" @click="findByTno(0, '')">全部</a>
+            	<a v-for="(type, index) in types" :data-tno="type.tno"  href="javascript:void(0)" @click="findByTno(index + 1, type.tno)">{{type.tname}}</a>
             </div>
         </div>
     </div>
@@ -91,52 +83,27 @@
         <li class="col03">小计</li>		
     </ul>
 </div>
-<div class="order_list_con" id="order_list">
-    <div class="order_title">
-    	<span>订单号：4355464646464364</span><span>下单日期： 2020-12-19</span><span>订单总额：<b style="color:red">800</b> 元</span>
-    	<a href="">去支付</a>
+<div class="order_list_con" id="products_list">
+	<div v-for="item in orders">
+	    <div class="order_title">
+	    	<span>订单号：{{item.ono}}</span><span>下单日期：{{item.odate}}</span><span>订单总额：<b style="color:red">{{item.totalPrice}}</b> 元</span>
+	    	<a href="javascript:void(0)" v-if="item.status == 1" @click="gotoPay(item.ono, item.totalPrice)" style="color:red">去支付</a>
+	    	<a href="javascript:void(0)" v-else-if="item.status == 2" style="color:orange">已支付</a>
+	    	<a href="javascript:void(0)" v-else-if="item.status == 3" style="color:purple">已发货</a>
+	    	<a href="javascript:void(0)" v-else-if="item.status == 4">去评论</a>
+	    	<a href="javascript:void(0)" style="color:green" v-else>已完成</a>
+	    </div>
+	    <ul class="goods_list_td clearfix" v-for="(itm, index) in item.goods">
+	        <li class="col01">{{index + 1}}</li>			
+	        <li class="col02"><img :src="itm.pics"></li>
+	        <li class="col03">{{itm.gname}}</li>
+	        <li class="col04">{{itm.weight}}/{{itm.unit}}</li>
+	        <li class="col04">{{itm.price}}元</li>
+	        <li class="col03">{{itm.nums}}</li>
+	        <li class="col04" v-html="(itm.nums * itm.price).toFixed(2) + '元'"></li>	
+	    </ul>
     </div>
-    <ul class="goods_list_td clearfix">
-        <li class="col01">1</li>			
-        <li class="col02"><img src="images/goods/good12.jpg"></li>
-        <li class="col03">奇异果</li>
-        <li class="col04">500g</li>
-        <li class="col04">25.80元</li>
-        <li class="col03">1</li>
-        <li class="col04">25.80元</li>	
-    </ul>
-    <ul class="goods_list_td clearfix">
-        <li class="col01">1</li>			
-        <li class="col02"><img src="images/goods/good12.jpg"></li>
-        <li class="col03">奇异果</li>
-        <li class="col04">500g</li>
-        <li class="col04">25.80元</li>
-        <li class="col03">1</li>
-        <li class="col04">25.80元</li>	
-    </ul>
     
-    <div class="order_title">
-    	<span>订单号：4355464646464364</span><span>下单日期： 2020-12-18</span><span>订单总额：<b style="color:red">800</b> 元</span>
-    	<a>已支付</a>
-    </div>
-    <ul class="goods_list_td clearfix">
-        <li class="col01">1</li>			
-        <li class="col02"><img src="images/goods/good12.jpg"></li>
-        <li class="col03">奇异果</li>
-        <li class="col04">500g</li>
-        <li class="col04">25.80元</li>
-        <li class="col03">1</li>
-        <li class="col04">25.80元</li>	
-    </ul>
-    <ul class="goods_list_td clearfix">
-        <li class="col01">1</li>			
-        <li class="col02"><img src="images/goods/good12.jpg"></li>
-        <li class="col03">奇异果</li>
-        <li class="col04">500g</li>
-        <li class="col04">25.80元</li>
-        <li class="col03">1</li>
-        <li class="col04">25.80元</li>	
-    </ul>
 </div>
         
 <footer>
@@ -149,13 +116,38 @@
     <p>CopyRight &copy; 2019 <a class="copy" href="http://www.hyycinfo.com" target="_blank">衡阳市源辰信息科技有限公司</a> All Rights Reserverd</p>
     <p>电话：0734-8355998 湘ICP备16015987号-1</p>
 </footer>
+
+<div class="popup_con">
+	<div class="popup">
+		<p id="popup_info"></p>
+	</div>
+</div>  
 <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="js/vue.js"></script>
 <script type="text/javascript" src="js/axios.js"></script>
 <script type="text/javascript" src="js/qs.js"></script>
 <script type="text/javascript" src="js/checklogin.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" src="js/getcartinfo.js"></script>
 
+<script type="text/javascript">
+let app = new Vue({
+	el:"#products_list",
+	data: {
+		orders : []
+	},
+	mounted : function() {
+		axios.get("order", {params:{op:"find"}}).then(result => {
+			if (result.status == 200 && result.data.code == 200) {
+				this.orders = result.data.data;
+			}
+		})
+	},
+	methods: {
+		gotoPay: function(ono, price) {
+			location.href = 'alipay?ono=' + ono +"&price=" + price;
+		}
+	}
+})
 </script>
 </body>
 </html>
